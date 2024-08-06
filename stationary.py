@@ -30,7 +30,6 @@ class Stationary:
     def get_stock(self):
         return self.stock
 
-
     #Set Methods to update data to the Stationary Class, hardly used for this assignment since there is no updating.
     def set_product_id(self, value):
         self.product_id = value
@@ -50,4 +49,9 @@ class Stationary:
     def set_stock(self, value):
         self.stock = value
 
+
+class RestockDetail:
+    def __init__(self, prod_id, quantity):
+        self.prod_id = prod_id
+        self.quantity = quantity
 

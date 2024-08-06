@@ -3,10 +3,13 @@
 #Sorting Methods and other methods/functions (such as display and populate) to run certain features in the system .
 
 from stationary import Stationary
+from stationary import RestockDetail
 from populateData import populateData
+from queue import Queue
 import random
 
 stationary_dict = {}
+restocking_queue = Queue()
 
 
 def get_item_attributes(item):
@@ -39,7 +42,6 @@ def display_stationary(records_per_row=1, index=0, attr_idx=0):
     else:
         print("\n")
         display_stationary(records_per_row, index + records_per_row, 0)
-
 
 
 #Function used to generate a suggested product id which is close to the product id entered but already exists
@@ -160,6 +162,55 @@ def insertion_sort_by_brand():
     return stationary_list
 
 
+def merge_sort_by_category_then_stock(stationary_list):
+    if len(stationary_list) <= 1:
+        return stationary_list
+
+    mid = len(stationary_list) // 2
+    left_half = merge_sort_by_category_then_stock(stationary_list[:mid])
+    right_half = merge_sort_by_category_then_stock(stationary_list[mid:])
+
+    sorted_stationary_list = []
+    i = j = 0
+
+    while i < len(left_half) and j < len(right_half):
+        if (left_half[i].get_category(), left_half[i].get_stock()) <= (right_half[j].get_category(), right_half[j].get_stock()):
+            sorted_stationary_list.append(left_half[i])
+            i += 1
+        else:
+            sorted_stationary_list.append(right_half[j])
+            j += 1
+
+    sorted_stationary_list.extend(left_half[i:])
+    sorted_stationary_list.extend(right_half[j:])
+
+    # Print the result of each merge step to demonstrate how the sort works
+    print("New List:\n------------------------------------------")
+    for item in sorted_stationary_list:
+        print(item.get_product_id())
+    print("------------------------------------------")
+
+    return sorted_stationary_list
+
+
+def selection_sort_by_prod_id():
+    stationary_list = list(stationary_dict.values())
+    n = len(stationary_list)
+
+    for i in range(n):
+        max_idx = i
+        for j in range(i + 1, n):
+            if stationary_list[j].get_product_id() > stationary_list[max_idx].get_product_id():
+                max_idx = j
+        stationary_list[i], stationary_list[max_idx] = stationary_list[max_idx], stationary_list[i]
+        print(f"Pass {i + 1}:\n------------------------------------------")
+        for item in stationary_list:
+            print(item.get_product_id())
+        print("------------------------------------------")
+
+    return stationary_list
+
+
 def populatingData():
     product_list = populateData()
     for product in product_list:
@@ -171,11 +222,61 @@ def populatingData():
 
 
 #A function used to print the Stationary Details that are in a new list, different from display_stationary which prints the Stationary Details directly from the original Dictionary populated by populateData
-def product_display(item):
-    product_id = item.get_product_id()
-    product_name = item.get_product_name()
-    product_category = item.get_category()
-    product_brand = item.get_brand()
-    product_supplier_since = item.get_supplier_since()
-    return f"Product ID: {product_id} \nProduct Name: {product_name} \nProduct Category: {product_category} \nBrand: {product_brand} \nSupplier Year: {product_supplier_since}"
+# Function to display the stationary list from a given list
+def product_display(stationary_list, records_per_row=1, index=0, attr_idx=0):
+    max_attributes = 6
+    column_width = 50
 
+    if index >= len(stationary_list):
+        return
+
+    current_row = stationary_list[index:index + records_per_row]
+    attributes = [get_item_attributes(item) for item in current_row]
+
+    if attr_idx < max_attributes:
+        for attr in attributes:
+            print(attr[attr_idx][:column_width].ljust(column_width), end="")
+        print()
+        product_display(stationary_list, records_per_row, index, attr_idx + 1)
+    else:
+        print("\n")
+        product_display(stationary_list, records_per_row, index + records_per_row, 0)
+
+
+def add_stock_arrival_to_queue():
+    prod_id = input("Enter Product ID: ").upper()
+    quantity = int(input("Enter quantity: "))
+
+    if prod_id not in stationary_dict:
+        print("Product ID does not exist in the system. Cannot add to restocking queue.")
+        return
+
+    restock_detail = RestockDetail(prod_id, quantity)
+    restocking_queue.put(restock_detail)
+    print(f"Added {quantity} units of Product ID {prod_id} to the restocking queue.")
+
+
+def view_stock_arrival_in_queue():
+    print(f"There are {restocking_queue.qsize()} deliveries in the queue.")
+
+
+def handle_next_stock_arrival_in_queue():
+    if restocking_queue.empty():
+        print("No deliveries to handle.")
+        return
+
+    restock_detail = restocking_queue.get()
+    prod_id = restock_detail.prod_id
+    quantity = restock_detail.quantity
+
+    print(f"Handling delivery of {quantity} units of Product ID {prod_id}.")
+    action = input("Accept delivery? (y/n): ").lower()
+
+    if action == 'y':
+        stationary_dict[prod_id].set_stock(stationary_dict[prod_id].get_stock() + quantity)
+        print(f"Updated stock for Product ID {prod_id}: {stationary_dict[prod_id].get_stock()} units.")
+    else:
+        restocking_queue.put(restock_detail)
+        print("Delivery sent to the back of the queue.")
+
+    print(f"There are {restocking_queue.qsize()} deliveries remaining in the queue.")

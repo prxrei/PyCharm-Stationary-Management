@@ -3,6 +3,8 @@
 from stationary import Stationary
 
 #Function provided by IT2153 DSA Assignment 1 to populate the system.
+
+
 def populateData():
     prodList = []
     newStudA = Stationary("PD1020", "Pastel Art Paper", "Paper", "Faber-Castell", 2021, 2000)
