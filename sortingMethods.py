@@ -9,20 +9,41 @@ import random
 stationary_dict = {}
 
 
-def display_stationary():
+def get_item_attributes(item):
+    return [
+        f"Product ID: {item.get_product_id()}",
+        f"Product Name: {item.get_product_name()}",
+        f"Product Category: {item.get_category()}",
+        f"Brand: {item.get_brand()}",
+        f"Supplier Year: {item.get_supplier_since()}",
+        f"Stock: {item.get_stock()}"
+    ]
+
+def display_stationary(records_per_row=1):
+    def display_recursive(items, per_row, index=0):
+        if index >= len(items):
+            return
+
+        current_row = items[index:index + per_row]
+        attributes = [get_item_attributes(item) for item in current_row]
+
+        max_attributes = len(attributes[0])
+        column_width = 50  # Fixed width for each column
+
+        for attr_idx in range(max_attributes):
+            for attr in attributes:
+                # Print each attribute with fixed width, truncating if necessary
+                print(attr[attr_idx][:column_width].ljust(column_width), end="")
+            print()
+        print("\n")
+        display_recursive(items, per_row, index + per_row)
+
     if stationary_dict:
-        for item in stationary_dict.values():
-            product_id = item.get_product_id()
-            product_name = item.get_product_name()
-            product_category = item.get_category()
-            product_brand = item.get_brand()
-            product_supplier_since = item.get_supplier_since()
-            product_stock = item.get_stock()
-            print("-----------------------------------------------------------------")
-            print(f"Product ID: {product_id} \nProduct Name: {product_name} \nProduct Category: {product_category} \nBrand: {product_brand} \nSupplier Year: {product_supplier_since} \nStock: {product_stock}")
-        print("-----------------------------------------------------------------")
+        all_items = list(stationary_dict.values())
+        display_recursive(all_items, records_per_row)
     else:
         print("There are currently no products in the system!")
+
 
 
 #Function used to generate a suggested product id which is close to the product id entered but already exists
