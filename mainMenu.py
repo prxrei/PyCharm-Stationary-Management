@@ -1,6 +1,8 @@
 #Yong Xuan Wei Johan , 235008L, IT2153-01
 
-from sortingMethods import display_stationary, add_stationary, optimized_bubble_sort_by_category, insertion_sort_by_brand, populatingData, product_display
+from sortingMethods import display_stationary, add_stationary, optimized_bubble_sort_by_category, \
+    insertion_sort_by_brand, populatingData, product_display, stationary_dict
+
 
 #Main Menu Console
 def stationarymenu():
@@ -26,9 +28,8 @@ def main():
         if choice == '1':
             add_stationary()
         elif choice == '2':
-            print(records_per_row)
             print("Product List:")
-            print("-"*200)
+            print("-" * 200)
             display_stationary(records_per_row)
             print("-" * 200)
         elif choice == '3':
@@ -42,12 +43,16 @@ def main():
         elif choice == '8':
             while True:
                 try:
+                    total_items = len(stationary_dict)
                     records_per_row = int(input("Enter number of records per row (default is 1): "))
                     if records_per_row < 1:
                         raise ValueError("Number of records per row must be at least 1.")
+                    if total_items < records_per_row:
+                        raise ValueError("Not enough items in the system to display that many records per row.")
+                    print(f"Number of records to display per row is set to {records_per_row}.\n")
                     break
                 except ValueError as e:
-                    print(f"Error: {e}")
+                    print(f"Error: Invalid Integer Input")
         elif choice == '9':
             populatingData()
         elif choice == '0':

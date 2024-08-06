@@ -19,30 +19,26 @@ def get_item_attributes(item):
         f"Stock: {item.get_stock()}"
     ]
 
-def display_stationary(records_per_row=1):
-    def display_recursive(items, per_row, index=0):
-        if index >= len(items):
-            return
 
-        current_row = items[index:index + per_row]
-        attributes = [get_item_attributes(item) for item in current_row]
+def display_stationary(records_per_row=1, index=0, attr_idx=0):
+    all_items = list(stationary_dict.values())
+    max_attributes = 6
+    column_width = 50
 
-        max_attributes = len(attributes[0])
-        column_width = 50  # Fixed width for each column
+    if index >= len(all_items):
+        return
 
-        for attr_idx in range(max_attributes):
-            for attr in attributes:
-                # Print each attribute with fixed width, truncating if necessary
-                print(attr[attr_idx][:column_width].ljust(column_width), end="")
-            print()
-        print("\n")
-        display_recursive(items, per_row, index + per_row)
+    current_row = all_items[index:index + records_per_row]
+    attributes = [get_item_attributes(item) for item in current_row]
 
-    if stationary_dict:
-        all_items = list(stationary_dict.values())
-        display_recursive(all_items, records_per_row)
+    if attr_idx < max_attributes:
+        for attr in attributes:
+            print(attr[attr_idx][:column_width].ljust(column_width), end="")
+        print()
+        display_stationary(records_per_row, index, attr_idx + 1)
     else:
-        print("There are currently no products in the system!")
+        print("\n")
+        display_stationary(records_per_row, index + records_per_row, 0)
 
 
 
