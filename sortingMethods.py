@@ -39,14 +39,14 @@ def display_stationary(records_per_row=1, index=0, attr_idx=0):
 
     # Check if the current attribute index is less than the maximum number of attributes
     if attr_idx < max_attributes:
-        # Iterate through the list of attributes and print the current attribute for each item
+        # Go through the list of attributes and print the current attribute for each item
         for attr in items:
             print(attr[attr_idx][:column_width].ljust(column_width), end="")
         print()
         # Recursive call to print the next attribute for the current row
         display_stationary(records_per_row, index, attr_idx + 1)
     else:
-        # If all attributes for the current row have been printed, move to the next row
+        # Recursively move to the next row after all attributes for the current row have been printed.
         print("\n")
         display_stationary(records_per_row, index + records_per_row, 0)
 
