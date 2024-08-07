@@ -1,8 +1,8 @@
-#Yong Xuan Wei Johan , 235008L, IT2153-01
+# Yong Xuan Wei Johan , 235008L, IT2153-01
 
 from stationary import Stationary
 
-#Function provided by IT2153 DSA Assignment 1 to populate the system.
+# Function provided by IT2153 DSA Assignment 1 to populate the system.
 
 
 def populateData():

@@ -1,11 +1,12 @@
-#Yong Xuan Wei Johan , 235008L, IT2153-01
+# Yong Xuan Wei Johan , 235008L, IT2153-01
 
 from sortingMethods import display_stationary, add_stationary, optimized_bubble_sort_by_category, \
     insertion_sort_by_brand, populatingData, product_display, stationary_dict, selection_sort_by_prod_id, \
-    merge_sort_by_category_then_stock, add_stock_arrival_to_queue, view_stock_arrival_in_queue, handle_next_stock_arrival_in_queue
+    merge_sort_by_category_then_stock, add_stock_arrival_to_queue, view_stock_arrival_in_queue, \
+    handle_next_stock_arrival_in_queue, update_stationary_dict
 
 
-#Main Menu Console
+# Main Menu Console
 def stationarymenu():
     print("Stationary Management Menu:")
     print("1. Add New Stationary")
@@ -13,22 +14,6 @@ def stationarymenu():
     print("3. Sort Stationary via Bubble Sort on Category (Descending Order)")
     print("4. Sort Stationary via Insertion Sort on Brand (Ascending Order)")
     print("5. Sort Stationary via Selection Sort on Prod Id")
-    print("6. Sort Stationary via Merge Sort on Category followed by Stock (Ascending Order)")
-    print("7. Go to Restocking Menu")
-    print("8. Set number of records per row to display")
-    print("9. Populate Data")
-    print("0. Exit Program")
-    print("")
-
-
-#Main function to run the system.
-def stationarymenu():
-    print("Stationary Management Menu:")
-    print("1. Add New Stationary")
-    print("2. Display Stationary Details")
-    print("3. Sort Stationary via Bubble Sort on Category (Descending Order)")
-    print("4. Sort Stationary via Insertion Sort on Brand (Ascending Order)")
-    print("5. Sort Stationary via Selection Sort on Prod Id (Descending Order)")
     print("6. Sort Stationary via Merge Sort on Category followed by Stock (Ascending Order)")
     print("7. Go to Restocking Menu")
     print("8. Set number of records per row to display")
@@ -61,19 +46,31 @@ def main():
         elif choice == '3':
             sorted_list = optimized_bubble_sort_by_category()
             print("Sort Stationary via Optimized Bubble Sort on Category (Descending Order):")
-            product_display(sorted_list, records_per_row)
+            print("-" * 200)
+            update_stationary_dict(sorted_list)
+            display_stationary(records_per_row)
+            print("-" * 200)
         elif choice == '4':
             sorted_list = insertion_sort_by_brand()
             print("Sort Stationary via Insertion Sort on Brand (Ascending Order):")
-            product_display(sorted_list, records_per_row)
+            print("-" * 200)
+            update_stationary_dict(sorted_list)
+            display_stationary(records_per_row)
+            print("-" * 200)
         elif choice == '5':
             sorted_list = selection_sort_by_prod_id()
-            print("Sort Stationary via Selection Sort on Prod id (Descending Order)")
-            product_display(sorted_list, records_per_row)
+            print("Sort Stationary via Selection Sort on Prod id (Descending Order):")
+            print("-" * 200)
+            update_stationary_dict(sorted_list)
+            display_stationary(records_per_row)
+            print("-" * 200)
         elif choice == '6':
             sorted_list = merge_sort_by_category_then_stock(list(stationary_dict.values()))
-            print("Sort Stationary via Merge Sort on Category followed by Stock (Ascending Order)")
-            product_display(sorted_list, records_per_row)
+            print("Sort Stationary via Merge Sort on Category followed by Stock (Ascending Order):")
+            print("-" * 200)
+            update_stationary_dict(sorted_list)
+            display_stationary(records_per_row)
+            print("-" * 200)
         elif choice == '7':
             while True:
                 restocking_menu()
@@ -111,4 +108,3 @@ def main():
 
 
 main()
-

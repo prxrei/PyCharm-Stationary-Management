@@ -1,6 +1,6 @@
-#Yong Xuan Wei Johan , 235008L, IT2153-01
+# Yong Xuan Wei Johan , 235008L, IT2153-01
 
-#Stationary Class with all the Getters and Setters(Get and Set methods)
+# Stationary Class with all the Getters and Setters(Get and Set methods)
 
 class Stationary:
     def __init__(self, prod_id, prod_name, category, brand, supplier_since, stock):
@@ -11,7 +11,7 @@ class Stationary:
         self.supplier_since = supplier_since
         self.stock = stock
 
-    #Get Methods to retrieve data from the Stationary Class
+    # Get Methods to retrieve data from the Stationary Class
     def get_product_id(self):
         return self.product_id
 
@@ -30,7 +30,7 @@ class Stationary:
     def get_stock(self):
         return self.stock
 
-    #Set Methods to update data to the Stationary Class, hardly used for this assignment since there is no updating.
+    # Set Methods to update data to the Stationary Class, hardly used for this assignment since there is no updating.
     def set_product_id(self, value):
         self.product_id = value
 
