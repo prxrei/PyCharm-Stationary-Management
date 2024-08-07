@@ -5,11 +5,11 @@
 from stationary import Stationary
 from stationary import RestockDetail
 from populateData import populateData
-from queue import Queue
+from stationary import Queue
 import random
 
 stationary_dict = {}
-restocking_queue = Queue()
+RestockingQ = Queue()
 
 
 def get_item_attributes(item):
@@ -167,30 +167,22 @@ def merge_sort_by_category_then_stock(stationary_list):
         return stationary_list
 
     mid = len(stationary_list) // 2
-    left_half = merge_sort_by_category_then_stock(stationary_list[:mid])
-    right_half = merge_sort_by_category_then_stock(stationary_list[mid:])
+    left = merge_sort_by_category_then_stock(stationary_list[:mid])
+    right = merge_sort_by_category_then_stock(stationary_list[mid:])
 
-    sorted_stationary_list = []
-    i = j = 0
+    return merge_sort(left, right)
 
-    while i < len(left_half) and j < len(right_half):
-        if (left_half[i].get_category(), left_half[i].get_stock()) <= (right_half[j].get_category(), right_half[j].get_stock()):
-            sorted_stationary_list.append(left_half[i])
-            i += 1
-        else:
-            sorted_stationary_list.append(right_half[j])
-            j += 1
 
-    sorted_stationary_list.extend(left_half[i:])
-    sorted_stationary_list.extend(right_half[j:])
+def merge_sort(left, right):
+    if not left:
+        return right
+    if not right:
+        return left
 
-    # Print the result of each merge step to demonstrate how the sort works
-    print("New List:\n------------------------------------------")
-    for item in sorted_stationary_list:
-        print(item.get_product_id())
-    print("------------------------------------------")
-
-    return sorted_stationary_list
+    if (left[0].get_category(), left[0].get_stock()) <= (right[0].get_category(), right[0].get_stock()):
+        return [left[0]] + merge_sort(left[1:], right)
+    else:
+        return [right[0]] + merge_sort(left, right[1:])
 
 
 def selection_sort_by_prod_id():
@@ -245,38 +237,39 @@ def product_display(stationary_list, records_per_row=1, index=0, attr_idx=0):
 
 def add_stock_arrival_to_queue():
     prod_id = input("Enter Product ID: ").upper()
-    quantity = int(input("Enter quantity: "))
 
     if prod_id not in stationary_dict:
         print("Product ID does not exist in the system. Cannot add to restocking queue.")
         return
 
+    quantity = int(input("Enter quantity: "))
+
     restock_detail = RestockDetail(prod_id, quantity)
-    restocking_queue.put(restock_detail)
+    RestockingQ.enqueue(restock_detail)
     print(f"Added {quantity} units of Product ID {prod_id} to the restocking queue.")
 
 
 def view_stock_arrival_in_queue():
-    print(f"There are {restocking_queue.qsize()} deliveries in the queue.")
+    print(f"There are {RestockingQ.length()} deliveries in the queue.")
 
 
 def handle_next_stock_arrival_in_queue():
-    if restocking_queue.empty():
+    if RestockingQ.isEmpty():
         print("No deliveries to handle.")
         return
 
-    restock_detail = restocking_queue.get()
+    restock_detail = RestockingQ.dequeue()
     prod_id = restock_detail.prod_id
     quantity = restock_detail.quantity
 
     print(f"Handling delivery of {quantity} units of Product ID {prod_id}.")
-    action = input("Accept delivery? (y/n): ").lower()
+    action = input("Accept delivery? (Y/N): ").upper()
 
-    if action == 'y':
+    if action == 'Y':
         stationary_dict[prod_id].set_stock(stationary_dict[prod_id].get_stock() + quantity)
         print(f"Updated stock for Product ID {prod_id}: {stationary_dict[prod_id].get_stock()} units.")
     else:
-        restocking_queue.put(restock_detail)
+        RestockingQ.enqueue(restock_detail)
         print("Delivery sent to the back of the queue.")
 
-    print(f"There are {restocking_queue.qsize()} deliveries remaining in the queue.")
+    print(f"There are {RestockingQ.length()} deliveries remaining in the queue.")
